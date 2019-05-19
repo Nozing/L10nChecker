@@ -143,7 +143,7 @@ public class LocalizationManager {
 	 * 
 	 * @return Returns a <code>{@link MissedWordLocalesManager}</code> ready to work
 	 */
-	public MissedWordLocalesManager findIncompleteKeys() {
+	public MissedWordLocalesManager configureMissedWorlLocalesManager() {
 		
 		MissedWordLocalesManager mwlm = new MissedWordLocalesManager();
 		

@@ -149,7 +149,7 @@ public class LocalizationManagerInstantiationTest {
         lm.addLanguage(this.locale_en, this.dictionary_en);
         
         MissedWordLocalesManager missedLocalesMgr = 
-        		lm.findIncompleteKeys();
+        		lm.configureMissedWorlLocalesManager();
         
         Assert.assertNotNull(missedLocalesMgr);
         

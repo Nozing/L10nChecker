@@ -22,6 +22,9 @@ public class ResourceFilesTest {
     private String pathFile_es = "gl/nozing/l10nChecker/ApplicationResources_es.properties";
     private String pathFile_es_ES = "gl/nozing/l10nChecker/ApplicationResources_es_ES.properties";
 
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
+    
     @Test
     public void getResourcesFilesTest() {
 
@@ -75,9 +78,6 @@ public class ResourceFilesTest {
         Properties properties = rfLocator.getProperties();
         Assert.assertNotNull(properties);
     }
-
-    @Rule
-    private ExpectedException exceptionRule = ExpectedException.none();
     
     @Test
     public void extractLocaleFromFileNameTest() throws Exception {
