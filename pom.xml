@@ -56,21 +56,6 @@
 		</testResources>
 	</build>
 
-<!-- 	<profiles> -->
-<!-- 		<profile> -->
-<!-- 			<id>default</id> -->
-<!-- 			<activation> -->
-<!-- 				<activeByDefault>true</activeByDefault> -->
-<!-- 			</activation> -->
-<!-- 			<properties> -->
-
-<!-- 			</properties> -->
-<!-- 		</profile> -->
-<!-- 		<profile> -->
-<!-- 			<id>PRO</id> -->
-<!-- 		</profile> -->
-<!-- 	</profiles> -->
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
