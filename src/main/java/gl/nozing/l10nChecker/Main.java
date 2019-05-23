@@ -91,9 +91,23 @@ public class Main {
 	 */
 	public void addArgument(String arg, String value) {
 
-		this.arguments.put(arg, value);
+		arguments.put(arg, value);
 	}
 
+	/**
+	 * <p>
+	 * Returns the value of a given argument
+	 * </p>
+	 * 
+	 * @param arg Name of the argument to be retrieved
+	 * @return Returns the value of the argument given or <code>NULL</code> if there
+	 *         isn't a value
+	 */
+	public String getArgument(String arg) {
+		
+		return arguments.get(arg);
+	}
+	
 	/**
 	 * @return Returns a list of <code>{@link ResourceFile}</code> of resources
 	 */
