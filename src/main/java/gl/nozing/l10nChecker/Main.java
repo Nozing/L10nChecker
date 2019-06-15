@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gl.nozing.l10nChecker.argument.ArgumentType;
-import gl.nozing.l10nChecker.argument.exception.ParamMissingConfigurationException;
+import gl.nozing.l10nChecker.argument.exception.ArgumentMissingConfigurationException;
 import gl.nozing.l10nChecker.argument.exception.UnknownArgumentRuntimeException;
 import gl.nozing.l10nChecker.exception.ConfigurationException;
 import gl.nozing.l10nChecker.locale.L10nLocale;
@@ -137,9 +137,9 @@ public class Main {
 	 * 
 	 * @param args Array of <code>{@link String}</code> with the arguments to setup
 	 *             the application
-	 * @throws ParamMissingConfigurationException 
+	 * @throws ArgumentMissingConfigurationException 
 	 */
-	public static Main instantiateMain(String[] args) throws ParamMissingConfigurationException {
+	public static Main instantiateMain(String[] args) throws ArgumentMissingConfigurationException {
 		
 		Main main = new Main();
 		for (int i = 0; i < args.length; i++) {

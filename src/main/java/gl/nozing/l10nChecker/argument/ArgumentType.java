@@ -3,26 +3,32 @@
  */
 package gl.nozing.l10nChecker.argument;
 
-import gl.nozing.l10nChecker.argument.exception.ParamMissingConfigurationException;
+import gl.nozing.l10nChecker.argument.exception.ArgumentMissingConfigurationException;
 import gl.nozing.l10nChecker.argument.exception.UnknownArgumentRuntimeException;
 
 /**
+ * Enum with the arguments to configure the execution of the application
+ * 
  * @author nozing
  *
  */
 public enum ArgumentType implements RetrieveArgumentValue {
 
+	/**
+	 * Defines the file pattern it will be used to search the internationalization 
+	 * resources
+	 */
 	FILE_PATTERN("-fp") {
 
 		@Override
-		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ParamMissingConfigurationException {
+		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ArgumentMissingConfigurationException {
 
 			ArgumentType.checkIsValidArray(argumentPosition, arguments);			
 			String key = arguments[argumentPosition + 1];
 			
 			if (key.isEmpty()) {
 				
-				throw new ParamMissingConfigurationException(
+				throw new ArgumentMissingConfigurationException(
 						FILE_PATTERN, "Key value can't be empty");
 			}
 			
@@ -30,17 +36,21 @@ public enum ArgumentType implements RetrieveArgumentValue {
 		}
 	},
 	
+	/**
+	 * Defines the root directory where the application will start searching 
+	 * internationalization resource files
+	 */
 	WORKING_DIRECTORY("-wd") {
 
 		@Override
-		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ParamMissingConfigurationException {
+		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ArgumentMissingConfigurationException {
 
 			ArgumentType.checkIsValidArray(argumentPosition, arguments);			
 			String key = arguments[argumentPosition + 1];
 			
 			if (key.isEmpty()) {
 				
-				throw new ParamMissingConfigurationException(
+				throw new ArgumentMissingConfigurationException(
 						WORKING_DIRECTORY, "Key value can't be empty");
 			}
 			
@@ -48,19 +58,27 @@ public enum ArgumentType implements RetrieveArgumentValue {
 		}
 	},
 	
+	/**
+	 * Indicates to the application that it has to search for all the incomplete 
+	 * translations for all the translation keys
+	 */
 	INCOMPLETE_TRANSLATION("-it"),
 	
+	/**
+	 * Indicates to the application that it has to search for all the missing translations
+	 * of a given key
+	 */
 	INCOMPLETE_KEY_TRANSLATION("-itk") {
 
 		@Override
-		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ParamMissingConfigurationException {
+		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ArgumentMissingConfigurationException {
 
 			ArgumentType.checkIsValidArray(argumentPosition, arguments);			
 			String key = arguments[argumentPosition + 1];
 			
 			if (key.isEmpty()) {
 				
-				throw new ParamMissingConfigurationException(
+				throw new ArgumentMissingConfigurationException(
 						INCOMPLETE_KEY_TRANSLATION, "Key value can't be empty");
 			}
 			
@@ -81,7 +99,7 @@ public enum ArgumentType implements RetrieveArgumentValue {
 
 	@Override
 	public String retrieveValue(Integer argumentPosition, String[] arguments)
-			throws ParamMissingConfigurationException {
+			throws ArgumentMissingConfigurationException {
 		
 		return "";
 	}
@@ -100,16 +118,16 @@ public enum ArgumentType implements RetrieveArgumentValue {
 	}
 	
 	private static void checkIsValidArray(
-			Integer argumentPosition, String [] arguments) throws ParamMissingConfigurationException {
+			Integer argumentPosition, String [] arguments) throws ArgumentMissingConfigurationException {
 		
 		if (argumentPosition < arguments.length) {
 			
-			throw new ParamMissingConfigurationException(INCOMPLETE_KEY_TRANSLATION, 
+			throw new ArgumentMissingConfigurationException(INCOMPLETE_KEY_TRANSLATION, 
 					String.format("Position '%s' is out of index bound (arguments length is '%s')", 
 							argumentPosition, arguments.length));
 		} if (argumentPosition + 1 >= arguments.length) { 
 			
-			throw new ParamMissingConfigurationException(
+			throw new ArgumentMissingConfigurationException(
 					INCOMPLETE_KEY_TRANSLATION, "Missing key value");
 		}
 	}

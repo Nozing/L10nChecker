@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gl.nozing.l10nChecker.argument.ArgumentType;
-import gl.nozing.l10nChecker.argument.exception.ParamMissingConfigurationException;
+import gl.nozing.l10nChecker.argument.exception.ArgumentMissingConfigurationException;
 
 public class MainTest {
 
@@ -40,12 +40,12 @@ public class MainTest {
 	}
 	
 	@Test
-	public void checkSomethingToProcess() throws ParamMissingConfigurationException {
+	public void checkSomethingToProcess() throws ArgumentMissingConfigurationException {
 		
 		String [] args = new String [2];
 		args[0] = ArgumentType.INCOMPLETE_KEY_TRANSLATION.getName();
 		
-		exceptionRule.expect(ParamMissingConfigurationException.class);
+		exceptionRule.expect(ArgumentMissingConfigurationException.class);
 		Main.instantiateMain(args);
 		
 		args[1] = "key";
