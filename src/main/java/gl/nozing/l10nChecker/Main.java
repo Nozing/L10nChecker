@@ -9,6 +9,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gl.nozing.l10nChecker.argument.ArgumentType;
+import gl.nozing.l10nChecker.argument.exception.ParamMissingConfigurationException;
+import gl.nozing.l10nChecker.argument.exception.UnknownArgumentRuntimeException;
 import gl.nozing.l10nChecker.exception.ConfigurationException;
 import gl.nozing.l10nChecker.locale.L10nLocale;
 import gl.nozing.l10nChecker.localizationManager.LocalizationManager;
@@ -52,17 +55,13 @@ public class Main {
 
 	private static Logger log = LoggerFactory.getLogger(Main.class);
 	
-	public static final String ARG_INCOMPLETE_KEY_TRANSLATION = "-itk";
-	public static final String ARG_INCOMPLETE_TRANSLATION = "-it";
-	public static final String ARG_FILE_PATTERN = "-fp";
 	public static final String DEFAULT_FILE_NAME_PATTERN = "ApplicationResources";
-	public static final String ARG_WORKING_DIRECTORY = "-wd";
 	
 	private File initialFolder;
 
 	private List<ResourceFile> resourceFiles;
 
-	private Map<String, String> arguments = null;
+	private Map<ArgumentType, String> arguments = null;
 
 	/**
 	 * <p>
@@ -74,11 +73,11 @@ public class Main {
 		this.resourceFiles = new LinkedList<ResourceFile>();
 
 		// Default values for command line arguments
-		this.arguments = new HashMap<String, String>();
+		this.arguments = new HashMap<ArgumentType, String>();
 		// fp (file pattern) : name of the properties file we will try to find
-		this.arguments.put(ARG_FILE_PATTERN, DEFAULT_FILE_NAME_PATTERN);
+		this.arguments.put(ArgumentType.FILE_PATTERN, DEFAULT_FILE_NAME_PATTERN);
 		// wd (working directory) : root directory of the scan
-		this.arguments.put(ARG_WORKING_DIRECTORY, System.getProperty("user.dir"));
+		this.arguments.put(ArgumentType.WORKING_DIRECTORY, System.getProperty("user.dir"));
 	}
 
 	/**
@@ -86,10 +85,10 @@ public class Main {
 	 * Adds an argument to the application
 	 * </p>
 	 * 
-	 * @param arg   <code>{@link String}</code> with the arg to add
+	 * @param arg   <code>{@link ArgumentType}</code> with the arg to add
 	 * @param value <code>{@link String}</code> with the value of the arg to add
 	 */
-	public void addArgument(String arg, String value) {
+	public void addArgument(ArgumentType arg, String value) {
 
 		arguments.put(arg, value);
 	}
@@ -99,11 +98,11 @@ public class Main {
 	 * Returns the value of a given argument
 	 * </p>
 	 * 
-	 * @param arg Name of the argument to be retrieved
+	 * @param arg Argument to be retrieved
 	 * @return Returns the value of the argument given or <code>NULL</code> if there
 	 *         isn't a value
 	 */
-	public String getArgument(String arg) {
+	public String getArgument(ArgumentType arg) {
 		
 		return arguments.get(arg);
 	}
@@ -138,31 +137,24 @@ public class Main {
 	 * 
 	 * @param args Array of <code>{@link String}</code> with the arguments to setup
 	 *             the application
+	 * @throws ParamMissingConfigurationException 
 	 */
-	public static Main instantiateMain(String[] args) {
+	public static Main instantiateMain(String[] args) throws ParamMissingConfigurationException {
 		
 		Main main = new Main();
 		for (int i = 0; i < args.length; i++) {
 
-			switch (args[i]) {
-			case ARG_WORKING_DIRECTORY:
-				i++;
-				main.addArgument(ARG_WORKING_DIRECTORY, args[i]);
-				break;
-			case ARG_FILE_PATTERN:
-				i++;
-				main.addArgument(ARG_FILE_PATTERN, args[i]);
-				break;
-			case ARG_INCOMPLETE_TRANSLATION:
-				main.addArgument(ARG_INCOMPLETE_TRANSLATION, "");
-				break;
-			case ARG_INCOMPLETE_KEY_TRANSLATION:
-				i++;
-				main.addArgument(ARG_INCOMPLETE_KEY_TRANSLATION, args[i]);
-				break;
-			default:
-				break;
+			ArgumentType argType = null;
+			
+			try {
+				argType = ArgumentType.byName(args[i]);
+			} catch (UnknownArgumentRuntimeException uare) {
+				
+				/* We are traversing the arguments array so if we find something
+				 * we don't recognize as an configuration, we just ignore it */
 			}
+			
+			main.addArgument(argType, argType.retrieveValue(i, args));
 		}
 		
 		return main;
@@ -177,19 +169,19 @@ public class Main {
 	 */
 	private void process() throws Exception {
 
-		log.info(String.format("Using working directory '%s''", this.arguments.get(ARG_WORKING_DIRECTORY)));
+		log.info(String.format("Using working directory '%s''", this.arguments.get(ArgumentType.WORKING_DIRECTORY)));
 		loadResources();
 
 		LocalizationManager lm = configureLocalizationManager();
 
 		// Find incomplete translations or incomplete translations for a key
-		if (this.arguments.containsKey(ARG_INCOMPLETE_TRANSLATION)) {
+		if (this.arguments.containsKey(ArgumentType.INCOMPLETE_TRANSLATION)) {
 			
 			findAllIncompleteTranslations(lm);
 			
-		} else if (this.arguments.containsKey(ARG_INCOMPLETE_KEY_TRANSLATION)) {
+		} else if (this.arguments.containsKey(ArgumentType.INCOMPLETE_KEY_TRANSLATION)) {
 
-			findIncompleteTranslationsOfKey(lm, this.arguments.get(ARG_INCOMPLETE_KEY_TRANSLATION));
+			findIncompleteTranslationsOfKey(lm, this.arguments.get(ArgumentType.INCOMPLETE_KEY_TRANSLATION));
 		}
 	}
 
@@ -244,7 +236,7 @@ public class Main {
 	 * @throws ConfigurationException
 	 */
 	private void loadResources() throws ConfigurationException {
-		this.initialFolder = new File(this.arguments.get(ARG_WORKING_DIRECTORY));
+		this.initialFolder = new File(this.arguments.get(ArgumentType.WORKING_DIRECTORY));
 
 		if (!this.initialFolder.isDirectory()) {
 
@@ -347,7 +339,7 @@ public class Main {
 	 */
 	public boolean isProcessableFile(File file) {
 		return file.isFile() && !file.isHidden() && file.canRead()
-				&& file.getName().contains(this.arguments.get(ARG_FILE_PATTERN))
+				&& file.getName().contains(this.arguments.get(ArgumentType.FILE_PATTERN))
 				&& file.getName().contains(".properties");
 	}
 }

@@ -8,8 +8,8 @@ import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gl.nozing.l10nChecker.exception.ConfigurationException;
-
+import gl.nozing.l10nChecker.argument.ArgumentType;
+import gl.nozing.l10nChecker.argument.exception.ParamMissingConfigurationException;
 
 public class MainTest {
 
@@ -32,19 +32,20 @@ public class MainTest {
 		
 		Assert.assertEquals(
 				System.getProperty("user.dir"), 
-				main.getArgument(Main.ARG_WORKING_DIRECTORY));
+				main.getArgument(ArgumentType.WORKING_DIRECTORY));
 		
 		Assert.assertEquals(
 				Main.DEFAULT_FILE_NAME_PATTERN, 
-				main.getArgument(Main.ARG_FILE_PATTERN));
+				main.getArgument(ArgumentType.FILE_PATTERN));
 	}
 	
-	public void checkSomethingToProcess() {
+	@Test
+	public void checkSomethingToProcess() throws ParamMissingConfigurationException {
 		
 		String [] args = new String [2];
-		args[0] = Main.ARG_INCOMPLETE_KEY_TRANSLATION;
+		args[0] = ArgumentType.INCOMPLETE_KEY_TRANSLATION.getName();
 		
-		exceptionRule.expect(ConfigurationException.class);
+		exceptionRule.expect(ParamMissingConfigurationException.class);
 		Main.instantiateMain(args);
 		
 		args[1] = "key";
