@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import gl.nozing.l10nChecker.argument.exception.ArgumentMissingConfigurationExce
 import gl.nozing.l10nChecker.argument.exception.UnknownArgumentRuntimeException;
 import gl.nozing.l10nChecker.exception.ConfigurationException;
 import gl.nozing.l10nChecker.locale.L10nLocale;
+import gl.nozing.l10nChecker.locale.L10nNormalLocale;
 import gl.nozing.l10nChecker.localizationManager.LocalizationManager;
 import gl.nozing.l10nChecker.localizationManager.MissedWordLocalesManager;
 import gl.nozing.l10nChecker.localizationManager.obj.LanguageDO;
@@ -36,6 +38,8 @@ import gl.nozing.l10nChecker.resourceFile.ResourceFile;
  * incomplete translations</li>
  * <li><code>-itk key</code>: tells the application to find <strong>all</strong>
  * the incomplete translations of a given key <code>key</code></li>
+ * <li><code>-el locale</code>: ask for all the translations for a given locale
+ * </li>
  * </ul>
  * For example:
  * <ul>
@@ -148,13 +152,13 @@ public class Main {
 			
 			try {
 				argType = ArgumentType.byName(args[i]);
+				
+				main.addArgument(argType, argType.retrieveValue(i, args));
 			} catch (UnknownArgumentRuntimeException uare) {
 				
 				/* We are traversing the arguments array so if we find something
 				 * we don't recognize as an configuration, we just ignore it */
-			}
-			
-			main.addArgument(argType, argType.retrieveValue(i, args));
+			}			
 		}
 		
 		return main;
@@ -182,6 +186,31 @@ public class Main {
 		} else if (this.arguments.containsKey(ArgumentType.INCOMPLETE_KEY_TRANSLATION)) {
 
 			findIncompleteTranslationsOfKey(lm, this.arguments.get(ArgumentType.INCOMPLETE_KEY_TRANSLATION));
+		} else if (arguments.containsKey(ArgumentType.EXTRACT_LOCALE)) {
+			
+			extractLocale(lm, this.arguments.get(ArgumentType.INCOMPLETE_KEY_TRANSLATION));
+		}
+	}
+
+	/**
+	 * @param lm <code>{@link LocalizationManager}</code> with the localization
+	 *           information to be processed
+	 * @param localeName <code>@link String</code> with the name of the locale
+	 */
+	public void extractLocale(LocalizationManager lm, String localeName) {
+		
+		L10nLocale locale = new L10nNormalLocale(new Locale(localeName));
+	
+		LanguageDO lang = lm.retrieveValuesForLocale(locale);
+		
+		if (lang.getKeys().isEmpty()) {
+			
+			System.out.println(String.format("There aren't resulto for locale '%'", localeName));
+		}
+		
+		for (String key : lang.getKeys()) {
+			
+			System.out.println(String.format("%s = %s", key, lang.getValue(key)));
 		}
 	}
 

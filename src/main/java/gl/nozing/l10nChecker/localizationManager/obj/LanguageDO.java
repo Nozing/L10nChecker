@@ -63,7 +63,7 @@ public class LanguageDO {
 
     /**
      * 
-     * @return Returns a list of the keys contained in te dictionary
+     * @return Returns a list of the keys contained in the dictionary
      */
     public final List<String> getKeys() {
 

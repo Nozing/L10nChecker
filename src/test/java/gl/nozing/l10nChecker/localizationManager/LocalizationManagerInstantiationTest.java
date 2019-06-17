@@ -1,8 +1,10 @@
 package gl.nozing.l10nChecker.localizationManager;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -172,5 +174,48 @@ public class LocalizationManagerInstantiationTest {
         Assert.assertFalse(locales.getMissedLocales().isEmpty());
         Assert.assertTrue(locales.getMissedLocales().size() == 1);
         Assert.assertTrue(locales.getMissedLocales().contains(this.locale_es));
+    }
+    
+    @Test 
+    public void retrieveKeysFromLocaleTest() {
+    	
+    	LocalizationManager lm = new LocalizationManager();
+        lm.addLanguage(this.locale_es, this.dictionary_es);
+        lm.addLanguage(this.locale_en, this.dictionary_en);
+        
+        LanguageDO language = lm.retrieveValuesForLocale(this.locale_es);
+        
+        Assert.assertNotNull(language);
+        Assert.assertEquals(this.locale_es, language.getLocale());
+        
+        Assert.assertNotNull(language.getKeys());
+        Assert.assertFalse(language.getKeys().isEmpty());
+        
+        Set<String> allKeys = new HashSet<String>();
+        for (Object obj : this.dictionary_es.keySet()) {
+        	
+        	allKeys.add(obj.toString());
+        }
+        
+        for (Object obj : this.dictionary_en.keySet()) {
+        	
+        	allKeys.add(obj.toString());
+        }
+        
+        Assert.assertTrue(language.getKeys().size() == allKeys.size());
+        for (String key : allKeys) {
+        	
+        	String value = language.getValue(key);
+			if  (KEY5.equals(key) || KEY6.equals(key)) {
+        		
+        		Assert.assertNotNull(value);
+        		Assert.assertTrue(value.isEmpty());
+        	} else {
+        		
+        		Assert.assertNotNull(value);
+        		Assert.assertFalse(value.isEmpty());
+        		Assert.assertEquals(value, dictionary_es.get(key));
+        	}
+        }
     }
 }

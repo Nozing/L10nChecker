@@ -19,5 +19,6 @@ public interface RetrieveArgumentValue {
 	 * @return Returns an String with the value of the argument
 	 * @throws ArgumentMissingConfigurationException Exception thrown when the value can't be retrieved for any reason
 	 */
-	String retrieveValue(Integer argumentPosition, String [] arguments) throws ArgumentMissingConfigurationException;
+	String retrieveValue(Integer argumentPosition, String [] arguments) 
+			throws ArgumentMissingConfigurationException;
 }

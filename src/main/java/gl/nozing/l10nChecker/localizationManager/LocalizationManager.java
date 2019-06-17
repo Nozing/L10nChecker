@@ -1,11 +1,13 @@
 package gl.nozing.l10nChecker.localizationManager;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import gl.nozing.l10nChecker.locale.L10nLocale;
 import gl.nozing.l10nChecker.localizationManager.obj.LanguageDO;
@@ -153,5 +155,30 @@ public class LocalizationManager {
 		}
 		
 		return mwlm;
+	}
+
+	/**
+	 * @param locale
+	 * @return
+	 */
+	public LanguageDO retrieveValuesForLocale(L10nLocale locale) {
+		
+		LanguageDO langToReturn = new LanguageDO(locale);
+		
+		Set<String> allKeys = new HashSet<String>();
+		for (Entry<L10nLocale, LanguageDO> tmp : languages.entrySet()) {
+			
+			allKeys.addAll(tmp.getValue().getKeys());
+		}
+		
+
+		LanguageDO localeLang = languages.get(locale);
+		for (String key : allKeys) {
+			
+			String value = localeLang.getValue(key);
+			langToReturn.addToDictionay(key, (value != null ? value : ""));
+		}
+		
+		return langToReturn;
 	}
 }

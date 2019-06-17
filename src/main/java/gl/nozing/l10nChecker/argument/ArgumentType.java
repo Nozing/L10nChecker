@@ -3,11 +3,14 @@
  */
 package gl.nozing.l10nChecker.argument;
 
+import java.util.regex.Pattern;
+
+import gl.nozing.l10nChecker.argument.exception.ArgumentException;
 import gl.nozing.l10nChecker.argument.exception.ArgumentMissingConfigurationException;
 import gl.nozing.l10nChecker.argument.exception.UnknownArgumentRuntimeException;
 
 /**
- * Enum with the arguments to configure the execution of the application
+ * Enumeration with the arguments to configure the execution of the application
  * 
  * @author nozing
  *
@@ -23,16 +26,24 @@ public enum ArgumentType implements RetrieveArgumentValue {
 		@Override
 		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ArgumentMissingConfigurationException {
 
-			ArgumentType.checkIsValidArray(argumentPosition, arguments);			
-			String key = arguments[argumentPosition + 1];
-			
-			if (key.isEmpty()) {
+			try {
+				ArgumentType.checkIsValidArray(argumentPosition, arguments);
+			} catch (ArgumentException e) {
 				
 				throw new ArgumentMissingConfigurationException(
-						FILE_PATTERN, "Key value can't be empty");
+						FILE_PATTERN, e.getMessage());
 			}
 			
-			return key;
+			String value = arguments[argumentPosition + 1];
+			
+			if (value == null
+					|| value.isEmpty()) {
+				
+				throw new ArgumentMissingConfigurationException(
+						FILE_PATTERN, "Key value can't be empty or nullS");
+			}
+			
+			return value;
 		}
 	},
 	
@@ -45,16 +56,24 @@ public enum ArgumentType implements RetrieveArgumentValue {
 		@Override
 		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ArgumentMissingConfigurationException {
 
-			ArgumentType.checkIsValidArray(argumentPosition, arguments);			
-			String key = arguments[argumentPosition + 1];
-			
-			if (key.isEmpty()) {
+			try {
+				ArgumentType.checkIsValidArray(argumentPosition, arguments);
+			} catch (ArgumentException e) {
 				
 				throw new ArgumentMissingConfigurationException(
-						WORKING_DIRECTORY, "Key value can't be empty");
+						WORKING_DIRECTORY, e.getMessage());
 			}
 			
-			return key;
+			String value = arguments[argumentPosition + 1];
+			
+			if (value == null
+					|| value.isEmpty()) {
+				
+				throw new ArgumentMissingConfigurationException(
+						WORKING_DIRECTORY, "Key value can't be empty or nullS");
+			}
+			
+			return value;
 		}
 	},
 	
@@ -73,18 +92,61 @@ public enum ArgumentType implements RetrieveArgumentValue {
 		@Override
 		public String retrieveValue(Integer argumentPosition, String[] arguments) throws ArgumentMissingConfigurationException {
 
-			ArgumentType.checkIsValidArray(argumentPosition, arguments);			
-			String key = arguments[argumentPosition + 1];
-			
-			if (key.isEmpty()) {
+			try {
+				ArgumentType.checkIsValidArray(argumentPosition, arguments);
+			} catch (ArgumentException e) {
 				
 				throw new ArgumentMissingConfigurationException(
-						INCOMPLETE_KEY_TRANSLATION, "Key value can't be empty");
+						INCOMPLETE_KEY_TRANSLATION, e.getMessage());
 			}
 			
-			return key;
+			String value = arguments[argumentPosition + 1];
+			
+			if (value == null
+					|| value.isEmpty()) {
+				
+				throw new ArgumentMissingConfigurationException(
+						INCOMPLETE_KEY_TRANSLATION, "Key value can't be empty or nullS");
+			}
+			
+			return value;
 		}
-	};
+	},
+	
+	EXTRACT_LOCALE("-el") {
+		
+		@Override
+		public String retrieveValue(Integer argumentPosition, String[] arguments)
+				throws ArgumentMissingConfigurationException {
+			
+			try {
+				ArgumentType.checkIsValidArray(argumentPosition, arguments);
+			} catch (ArgumentException e) {
+				
+				throw new ArgumentMissingConfigurationException(
+						EXTRACT_LOCALE, e.getMessage());
+			}			
+			
+			String value = arguments[argumentPosition + 1];
+			
+			if (value == null
+					|| value.isEmpty()) {
+				
+				throw new ArgumentMissingConfigurationException(
+						EXTRACT_LOCALE, "Key value can't be empty or nullS");
+			}
+			
+			Pattern pattern = Pattern.compile("^[a-z]{2}(_[A-Z]{2}){0,1}$");
+			if (!pattern.matcher(value).lookingAt()) {
+				
+				throw new ArgumentMissingConfigurationException(
+						EXTRACT_LOCALE, String.format("Input '%s' is not a valid locale definition", value));
+			}
+			
+			return value;
+		}
+	}
+	;
 	
 	private String name;
 	
@@ -117,18 +179,28 @@ public enum ArgumentType implements RetrieveArgumentValue {
 		throw new UnknownArgumentRuntimeException(name);
 	}
 	
-	private static void checkIsValidArray(
-			Integer argumentPosition, String [] arguments) throws ArgumentMissingConfigurationException {
+	/**
+	 * @param argumentPosition
+	 * @param arguments
+	 * @throws ArgumentException 
+	 */
+	public static void checkIsValidArray(
+			Integer argumentPosition, String [] arguments) throws ArgumentException {
 		
-		if (argumentPosition < arguments.length) {
+		if (arguments == null 
+				|| arguments.length == 0) {
 			
-			throw new ArgumentMissingConfigurationException(INCOMPLETE_KEY_TRANSLATION, 
+			throw new ArgumentException("Arguments array can't be null or empty");
+		}
+		
+		if (argumentPosition < 0) {
+			
+			throw new ArgumentException( 
 					String.format("Position '%s' is out of index bound (arguments length is '%s')", 
 							argumentPosition, arguments.length));
 		} if (argumentPosition + 1 >= arguments.length) { 
 			
-			throw new ArgumentMissingConfigurationException(
-					INCOMPLETE_KEY_TRANSLATION, "Missing key value");
+			throw new ArgumentException("Missing key value");
 		}
 	}
 }
