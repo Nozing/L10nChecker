@@ -41,7 +41,7 @@ import gl.nozing.l10nChecker.resourceFile.ResourceFile;
  * <li><code>-el locale</code>: ask for all the translations for a given locale
  * </li>
  * </ul>
- * For example:
+ * <p>By example:</p>
  * <ul>
  * <li>Find all the incomplete translations inside a given directory: <br/><code>
  * java gl.nozing.l10nChecker.Main -wd /home/user/myProject -it</code>
@@ -195,7 +195,7 @@ public class Main {
 	/**
 	 * @param lm <code>{@link LocalizationManager}</code> with the localization
 	 *           information to be processed
-	 * @param localeName <code>@link String</code> with the name of the locale
+	 * @param localeName <code>{@link String}</code> with the name of the locale
 	 */
 	public void extractLocale(LocalizationManager lm, String localeName) {
 		
@@ -205,7 +205,7 @@ public class Main {
 		
 		if (lang.getKeys().isEmpty()) {
 			
-			System.out.println(String.format("There aren't resulto for locale '%'", localeName));
+			System.out.println(String.format("There aren't results for locale '%'", localeName));
 		}
 		
 		for (String key : lang.getKeys()) {

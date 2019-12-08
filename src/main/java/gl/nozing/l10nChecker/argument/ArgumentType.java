@@ -133,7 +133,7 @@ public enum ArgumentType implements RetrieveArgumentValue {
 					|| value.isEmpty()) {
 				
 				throw new ArgumentMissingConfigurationException(
-						EXTRACT_LOCALE, "Key value can't be empty or nullS");
+						EXTRACT_LOCALE, "Key value can't be empty or null");
 			}
 			
 			Pattern pattern = Pattern.compile("^[a-z]{2}(_[A-Z]{2}){0,1}$");
@@ -166,6 +166,18 @@ public enum ArgumentType implements RetrieveArgumentValue {
 		return "";
 	}
 	
+	/**
+	 * Returns an <code>ArgumentType</code> by its name. If there is not 
+	 * coincidence, the method throws an <code>
+	 * UnknownArgumentRuntimeException</code>.
+	 * 
+	 * @param name <code>String</code> with the name of the argument
+	 * @return Returns an <code>ArgumentType</code> or a runtime exception if 
+	 * the <code>name</code> doesn't match with an argument type.
+	 * @throws UnknownArgumentRuntimeException Runtime exception thrown if 
+	 * there isn't a math between <code>name</code> and <code>
+	 * ArgumentType</code>
+	 */
 	public static ArgumentType byName(String name) {
 		
 		for (ArgumentType argType : ArgumentType.values()) {
@@ -180,11 +192,12 @@ public enum ArgumentType implements RetrieveArgumentValue {
 	}
 	
 	/**
-	 * @param argumentPosition
-	 * @param arguments
-	 * @throws ArgumentException 
+	 * Checks if inside an array an argument has a value
+	 * @param argumentPosition Integer with the position of the argument name in the array
+	 * @param arguments Array of arguments to check
+	 * @throws ArgumentException Exception thrown if the array is not valid
 	 */
-	public static void checkIsValidArray(
+	public static Boolean checkIsValidArray(
 			Integer argumentPosition, String [] arguments) throws ArgumentException {
 		
 		if (arguments == null 
@@ -202,5 +215,7 @@ public enum ArgumentType implements RetrieveArgumentValue {
 			
 			throw new ArgumentException("Missing key value");
 		}
+		
+		return true;
 	}
 }
